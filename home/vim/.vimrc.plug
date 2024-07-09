@@ -1,103 +1,64 @@
-" let Vundle manage Vundle, required
-"Plug 'VundleVim/Vundle.vim'
-call plug#begin("~/.vim/bundle")
-" Plugs
-Plug 'Yggdroot/indentLine'
-Plug 'vim-scripts/indentpython.vim'
-Plug 'jlanzarotta/bufexplorer'
+call plug#begin('~/.vim/plugged')
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-"Plug 'Lokaltog/vim-powerline'
-Plug 'Konfekt/FastFold'
 
 Plug 'vim-scripts/DrawIt'
-Plug 'terryma/vim-multiple-cursors'
-Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'freitass/todo.txt-vim'
-Plug 'hdima/python-syntax'
-"Plug 'tracyone/pyclewn_linux'
-Plug 'vim-scripts/Conque-GDB'
-Plug 'skywind3000/asyncrun.vim'
 Plug 'vim-scripts/ShowTrailingWhitespace'
-"Plug 'vim-scripts/taglist.vim'
-"Plug 'bling/vim-bufferline'
-Plug 'vim-ctrlspace/vim-ctrlspace'
 
 
 "color
 Plug 'altercation/vim-colors-solarized'
-"Plug 'sickill/vim-monokai'
 Plug 'crusoexia/vim-monokai'
 Plug 'jnurmine/Zenburn'						"colorscheme for GUI
 Plug 'missingtears/editplus'						"colorscheme for GUI
-"Plug 'vim-scripts/EditPlus'						"colorscheme for GUI
 Plug 'tomasr/molokai'
-
+"Plug 'fxn/vim-colors-x'
 "common
 
-Plug 'gregsexton/MatchTag'
-Plug 'vim-scripts/delimitMate.vim'
-Plug 'jrosiek/vim-mark'
-"Plug 'vim-scripts/Mark--Karkat'
+"Plug 'gregsexton/MatchTag'
+"Plug 'vim-scripts/delimitMate.vim'
+"Plug 'jrosiek/vim-mark'
 
-Plug 'scrooloose/nerdtree'
-Plug 'majutsushi/tagbar'
-Plug 'tmhedberg/SimpylFold'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'scrooloose/nerdcommenter'
-Plug 'Valloric/YouCompleteMe'
-Plug 'scrooloose/syntastic'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-Plug 'ybian/smartim'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'suan/vim-instant-markdown'
+Plug 'MattesGroeger/vim-bookmarks'
+Plug 'vim-scripts/Mark--Karkat'
 
-Plug 'mileszs/ack.vim'			" search wrapper of vimgrep
-"Plug 'multilobyte/gtags-cscope'
-"Plug 'jsfaint/gen_tags.vim'
-Plug 'aceofall/gtags.vim'
 
-"python
-"Plug 'pydoc.vim'
-Plug 'heavenshell/vim-pydocstring'
-Plug 'davidhalter/jedi-vim'
-"Plug 'vim-scripts/Pydiction'
-Plug 'rkulla/pydiction'
 
 "Plug 'ivanov/vim-ipython'
 "Plug 'julienr/vim-cellmode'
-
-"js
-Plug 'mattn/emmet-vim'
-Plug 'marijnh/tern_for_vim'
-Plug 'pangloss/vim-javascript'
-Plug 'othree/xml.vim'
-Plug 'KohPoll/vim-less'
-Plug 'lepture/vim-css'
-Plug 'darthmall/vim-vue'
-Plug 'mxw/vim-jsx'
-Plug 'justinj/vim-react-snippets'
 
 "cpp
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'Chiel92/vim-autoformat'
 Plug 'rhysd/vim-clang-format'
 
-"rust
-Plug 'rust-lang/rust.vim'
-
 "verilog
-Plug 'zhuzhzh/verilog_emacsauto.vim'
+"Plug 'zhuzhzh/verilog_emacsauto.vim'
 
 "llvm
-Plug 'ararslan/llvm.vim'
 
 "nim
 "Plug 'gmarik/v.vim'
 
-"weapp
-"Plug 'chemzqm/wxapp.vim'
+Plug 'Yggdroot/LeaderF', {'do': './install.sh'}
+Plug 'voldikss/LeaderF-floaterm'
+Plug 'voldikss/vim-floaterm'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'Yggdroot/indentLine'
+
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'
+
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'skywind3000/gutentags_plus'
+Plug 'aceofall/gtags.vim'
+
+Plug 'majutsushi/tagbar'
+
+
 call plug#end()

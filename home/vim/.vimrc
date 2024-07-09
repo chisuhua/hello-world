@@ -13,10 +13,6 @@ set hidden
 filetype off                  " required
 
 
-"if filereadable(expand("~/.vim/.vimrc.bundle"))
-"  	source ~/.vim/.vimrc.bundle
-"endif
-
 if filereadable(expand("~/.vim/.vimrc.plug"))
   	source ~/.vim/.vimrc.plug
 endif
@@ -78,7 +74,7 @@ function! SwitchToBuf(filename)
 endfunction
 
 
-let mapleader = ","
+let mapleader = " "
 if MySys() == 'linux'
   "Fast reloading of the .vimrc
   map <silent> <leader>ss :source ~/.vimrc<cr>
@@ -138,6 +134,7 @@ endif
  set ruler
 "显示行号：
  set number
+ set relativenumber
 "行宽
 set textwidth=9999
 "自动折行
@@ -251,15 +248,10 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                             ctags
-"
-"let Tlist_Ctags_Cmd='/usr/bin/ctags'
-"let Tlist_Ctags_Cmd='/usr/local/Cellar/ctags/5.8/bin/ctags'
-"用法：$ ctags –R 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "							 tagbar
-autocmd BufRead *.* nmap tb :Tagbar<cr>
+"autocmd BufRead *.* nmap tb :Tagbar<cr>
+nmap tb :Tagbar<cr>
 "let tagbar_ctags_bin='/usr/bin/ctags'
 let tagbar_width=35
 "let g:tagbar_compact = 1
@@ -267,160 +259,6 @@ let g:tagbar_autoshowtag = 1
 let g:tagbar_previewwin_pos = "aboveleft"
 autocmd BufWinEnter * if &previewwindow | setlocal nonumber | endif
 "let g:tagbar_autopreview = 1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                           YouCompleteMe
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"
-let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
-let g:ycm_python_binary_path = 'python'
-
-set completeopt=longest,menu 					" 让Vim的补全菜单行为与一般IDE一致
-let g:ycm_confirm_extra_conf = 0 				" 不用每次提示加载.ycm_extra_conf.py文件
-let g:ycm_show_diagnostics_ui = 0 				" 关闭ycm的syntastic
-
-let g:ycm_complete_in_comments = 1 				" 评论中也应用补全
-let g:ycm_min_num_of_chars_for_completion = 2			" 两个字开始补全
-let g:ycm_collect_identifiers_from_tags_files=1 		" 开启 YCM 基于标签引擎
-let g:ycm_cache_omnifunc=0 					" 禁止缓存匹配项,每次都重新生成匹配项
-let g:ycm_seed_identifiers_with_syntax = 1 			" 关键字补全
-""上下左右键的行为 会显示其他信息
-inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
-inoremap <expr> <Up>   pumvisible() ? "\<C-p>" : "\<Up>"
-inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-k>\<C-j>" : "\<PageDown>"
-inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-k>\<C-j>" : "\<PageUp>"
-
-"set YouCompleteMe trigger key
-let g:ycm_key_list_select_completion = ['<C-j>', '<Down>']
-"let g:ycm_key_list_select_completion = ['<Down>']
-let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
-"let g:ycm_key_list_previous_completion = ['<Up>']
-
-"离开插入模式后自动关闭预览窗口
-autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-"回车即选中当前项
-inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
-
-let g:ycm_key_invoke_completion = '<Enter>'
-let g:ycm_semantic_triggers =  {'c' : ['->', '.'], 'objc' : ['->', '.'], 'ocaml' : ['.', '#'], 'cpp,objcpp' : ['->', '.', '::'], 'php' : ['->', '::'], 'cs,java,javascript,vim,coffee,python,scala,go' : ['.'], 'ruby' : ['.', '::']}
-
-let g:ycm_autoclose_preview_window_after_completion=1
-map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
-nnoremap <leader>j :YcmCompleter GoTo<CR>
-
-"autocmd BufRead *.py nnoremap <C-]> :YcmCompleter GoTo<CR>
-autocmd BufRead *.js nnoremap <C-]> :TernDef<CR>
-
-
-nnoremap <leader>y :let g:ycm_auto_trigger=0<CR>
-nnoremap <leader>Y :let g:ycm_auto_trigger=1<CR>
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                jedi-vim
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:jedi#auto_initialization = 0
-let g:jedi#auto_vim_configuration = 0
-let g:jedi#use_tabs_not_buffers = 1
-let g:jedi#use_splits_not_buffers = "left"
-
-"let g:jedi#popup_on_dot = 0    " 用.触发
-"let g:jedi#popup_select_first = 0   " 自动选择菜单第一项
-
-let g:jedi#goto_command = "d"
-let g:jedi#goto_assignments_command = "<C-]>"
-let g:jedi#goto_definitions_command = ""
-let g:jedi#usages_command = "<C-u>"
-let g:jedi#documentation_command = "<C-g>"
-let g:jedi#completions_command = "<C-m>"
-
-"let g:jedi#completions_enabled = 0     "disable jedi
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                 错误检查
-"
-"let g:syntastic_cpp_include_dirs = ['/usr/include/']
-let g:syntastic_cpp_remove_include_errors = 1
-let g:syntastic_cpp_check_header = 1
-let g:syntastic_cpp_compiler = 'clang++'
-let g:syntastic_cpp_compiler_options = '-std=c++11 -stdlib=libstdc++'
-"set error or warning signs
-let g:syntastic_error_symbol = '✗'
-let g:syntastic_warning_symbol = '⚠'
-"whether to show balloons
-let g:syntastic_enable_balloons = 1
-
-"安装flake8: easy_install flake8
-let g:syntastic_python_checkers = ['flake8']
-let g:syntastic_python_flake8_args='--ignore=E501'
-let g:syntastic_javascript_checkers = ['eslint']
-let g:syntastic_javascript_jshint_exec = '/usr/local/bin/eslint'
-'
-"Default: 0
-"If enabled, syntastic will do syntax checks when buffers are first loaded as
-"well as on saving >
- "let g:syntastic_check_on_open=1
-
-"Default: 0
-"Enable this option to tell syntastic to always stick any detected errors into
-"the loclist: >
- let g:syntastic_always_populate_loc_list=1
-
-"Default: 2
-"When set to 1 the error window will be automatically opened when errors are
-"detected, and closed when none are detected. >
-"" let g:syntastic_auto_loc_list=1
-
-"When set to 2 the error window will be automatically closed when no errors are
-"detected, but not opened automatically. >
-let g:syntastic_auto_loc_list=2
-
-"only errors no warnings
- let g:syntastic_quiet_messages={'level': 'warnings'}
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                               pydiction
- let g:pydiction_location = '/work/home/.vim/bundle/pydiction/complete-dict'
-" let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
- let g:pydiction_menu_height = 20
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"										ultisnips
-" Track the engine.
-"Bundle 'SirVer/ultisnips'
-
-" Snippets are separated from the engine. Add this if you want them:
-"Bundle 'honza/vim-snippets'
-
-" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
-let g:UltiSnipsExpandTrigger="<tab>"
-"let g:UltiSnipsJumpForwardTrigger="<tab>"
-"let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-
-" If you want :UltiSnipsEdit to split your window.
-let g:UltiSnipsEditSplit="horizontal"
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                  Emmet
-"
-let g:user_emmet_expandabbr_key = '<C-e>'
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                 SimpylFold
-" 代码折叠
-let g:SimpylFold_docstring_preview=1
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                 FastFold
-let g:tex_fold_enabled=1
-let g:vimsyn_folding='af'
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Cuda *.cu as cpp filetype
@@ -461,34 +299,6 @@ endfunction
 au BufNewFile *.py call ScriptHeader()
 au BufNewFile *.sh call ScriptHeader()
 
-au BufNewFile,BufRead *.py  set tags+=$HOME/.vim/tags/python.ctags
-
-au BufNewFile,BufRead *.py
-    \ set tabstop=4      |
-    \ set softtabstop=4  |
-    \ set shiftwidth=4   |
-    \ set fileformat=unix |
-let python_highlight_all=1
-    "\ set textwidth=79   |
-    "\ set expandtab      |
-    "\ set autoindent     |
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                 docstring
-nmap <silent> <C-a> <Plug>(pydocstring)
-"template
-""""
-":param {{_args_}}:
-"{{_indent_}}:return:
-""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                  ctrlP
-" 当前目录查找
-let g:ctrlp_working_path_mode = 'ra'
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                               power-line
@@ -510,37 +320,6 @@ autocmd BufRead *.md nmap tb :Toc<cr>
 " Copy & Pase
 "set clipboard=unnamed
 " """""""""""""""""""""""
-
-"""""""""""""""""""""""""
-" Quickly run
-" """"""""""""""""""""""
-map <F4> :call CompileRunGcc()<CR>
-func! CompileRunGcc()
-	exec "w"
-	if &filetype == 'c'
-		exec "!g++ % -o %<"
-		exec "!time ./%<"
-	elseif &filetype == 'cpp'
-		exec "!g++ % -o %<"
-		exec "!time ./%<"
-	elseif &filetype == 'java'
-		exec "!javac %"
-		exec "!time java %<"
-	elseif &filetype == 'sh'
-		:!time bash %
-	elseif &filetype == 'python'
-		exec "!time python %"
-	elseif &filetype == 'html'
-		exec "!firefox % &"
-	elseif &filetype == 'go'
-		"exec "!go build %<"
-		exec "!time go run %"
-	elseif &filetype == 'mkd'
-		exec "!~/.vim/markdown.pl % > %.html &"
-		exec "!firefox %.html &"
-	endif
-endfunc
-
 
 """"""""""""""""""""""""""""""
 " mark setting
@@ -629,53 +408,6 @@ noremap <C-\><C-r> :Gtags -r <C-R>=expand("<cword>")<CR><CR>
 noremap <C-\><C-e> :Gtags -g <C-R>=expand("<cword>")<CR>
 noremap <C-\><C-]> :GtagsCursor<CR>
 """"""""""""""""""""""""""""""
-" gtags-cscope.vim
-"	explanation		command
-"	----------------------------------------------------------
-"	Find symbol		:cs find 0 or s
-"	Find definition		:cs find 1 or g
-"	Find functions called by this function	(not implemented)
-"	Find reference		:cs find 3 or c
-"	Find text string	:cs find 4 or t
-"	Find egrep pattern	:cs find 6 or e
-"	Find path		:cs find 7 or f
-"	Find include file	:cs find 8 or i
-let g:GtagsCscope_Auto_Load=1
-let g:GtagsCscope_Auto_Map=0
-"set csprg='/work/bin/gtags-cscope'
-set cscopequickfix=s-,c-,d-,i-,t-,e-,a-
-set cst
-"set csto=1
-set csprg='gtags-cscope'
-set tagstack
-set cscopetag
-" normal command
-:nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
-:nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
-:nmap <C-\>r :cs find c <C-R>=expand("<cword>")<CR><CR>
-:nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
-:nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
-:nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
-:nmap <C-\>i :cs find i <C-R>=expand("<cfile>")<CR><CR>
-":nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
-" Using 'CTRL-spacebar', the result is displayed in new horizontal window.
-:nmap <C-\><C-\>s :scs find s <C-R>=expand("<cword>")<CR><CR>
-:nmap <C-\><C-\>g :scs find g <C-R>=expand("<cword>")<CR><CR>
-:nmap <C-\><C-\>c :scs find c <C-R>=expand("<cword>")<CR><CR>
-:nmap <C-\><C-\>t :scs find t <C-R>=expand("<cword>")<CR><CR>
-:nmap <C-\><C-\>e :scs find e <C-R>=expand("<cword>")<CR><CR>
-:nmap <C-\><C-\>f :scs find f <C-R>=expand("<cfile>")<CR><CR>
-:nmap <C-\><C-\>i :scs find i <C-R>=expand("<cfile>")<CR><CR>
-":nmap <C-@>d :scs find d <C-R>=expand("<cword>")<CR><CR>
-" Hitting CTRL-space *twice*, the result is displayed in new vertical window.
-"":nmap <C-@><C-@>s :vert scs find s <C-R>=expand("<cword>")<CR><CR>
-"":nmap <C-@><C-@>g :vert scs find g <C-R>=expand("<cword>")<CR><CR>
-"":nmap <C-@><C-@>c :vert scs find c <C-R>=expand("<cword>")<CR><CR>
-"":nmap <C-@><C-@>t :vert scs find t <C-R>=expand("<cword>")<CR><CR>
-"":nmap <C-@><C-@>e :vert scs find e <C-R>=expand("<cword>")<CR><CR>
-"":nmap <C-@><C-@>f :vert scs find f <C-R>=expand("<cfile>")<CR><CR>
-"":nmap <C-@><C-@>i :vert scs find i <C-R>=expand("<cfile>")<CR><CR>
-":nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 "":nmap <C-[> :ta<CR>
 "":nmap <C-t> :pop<CR>
 "":nmap <C-[> :tag<CR>
@@ -685,74 +417,6 @@ set cscopetag
 :nmap <C-\>n :tn<CR>
 :nmap <C-\>p :tp<CR>
 :nmap <C-\>[ :top<CR>
-
-":nmap <C-\>a :Ack       <C-R>=expand("<cword>")<CR>:<C-R>=line('.')<CR>:%<CR>
-:nmap <C-\>a :Ack       <C-R>=expand("<cword>")<CR><CR>
-"let g:GtagsCscope_Auto_Load=1
-"let g:GtagsCscope_Quiet=1
-"let g:loaded_gentags#gtags=0
-"let g:loaded_gentags#ctags=1
-"nnoremap <C-\><C-]> :GtagsCursor<CR>
-"
-"
-
-"""""""""""""""""""""""""""""
-" pyclewn
-"let g:pyclewn_terminal="xterm,-e"
-
-" ConqueGdb
-let g:ConqueGdb_SrcSplit='above'
-"let g:ConqueGdb_SaveHistory=1
-let g:ConqueGdb_Continue='<F5>'
-let g:ConqueGdb_Next='<F10>'
-let g:ConqueGdb_Step='<F9>'
-let g:ConqueGdb_Finish = '<F8>'
-let g:ConqueGdb_Print = '<F12>'
-":noremap <F12> :ConqueGdbCommand
-" command! -nargs=+ ConqueGdbCommand call conque_gdb#command(<q-args>)
-"    let g:ConqueGdb_Run = g:ConqueGdb_Leader . 'r'
-"    let g:ConqueGdb_Print = g:ConqueGdb_Leader . 'p'
-"    let g:ConqueGdb_Finish = g:ConqueGdb_Leader . 'f'
-"    let g:ConqueGdb_Backtrace = g:ConqueGdb_Leader . 't'
-:noremap <F12> ":\<C-u>ConqueTermVSplit sh\n\<C-o>:call feedkeys('python '.shellescape(bufname(".bufnr("%").")).\"\\n\")\n"
-
-"""""""""""""""""""""""""""""
-" bufExplorer
-"let g:bufExplorerShowTabBuffer=1        " Yes.
-" f/F open buffer under current window
-" v/V open buffer on right of current window
-" o open buffer is under cursor into current window
-" s cycle through buffers are listed
-" leader,bt,bs,bv
-
-"""""""""""""""""""""""""""""
-" ctrlspace
-"
-  let g:CtrlSpaceDefaultMappingKey = "<C-l>"
-  let g:airline#extensions#ctrlspace#enabled = 1
-  let g:CtrlSpaceUseTabline = 1
-  let g:CtrlSpaceStatuslineFunction = "airline#extensions#ctrlspace#statusline()"
-  if executable("ag")
-      let g:CtrlSpaceGlobCommand = 'ag -l --nocolor -g ""'
-  endif
-
-"""""""""""""""""""""""""""""
-" ycm
-  let g:airline#extensions#ycm#enabled = 1
-
-"""""""""""""""""""""""""""""
-" bufferline
-"
-"let g:bufferline_show_bufnr = 5
-"let g:bufferline_rotate = 1
-
-
-" integrated with airline
-""* enable/disable bufferline integration >
-  let g:airline#extensions#bufferline#enabled = 0
-
-""* determine whether bufferline will overwrite customization variables >
-  let g:airline#extensions#bufferline#overwrite_variables = 0
 
 """""""""""""""""""""""""""""
 " airline
@@ -865,6 +529,27 @@ noremap <C-k>n :tabprev<CR>
 "let g:airline_theme='molokai'
 "let g:airline_theme='zenburn'
 let g:airline_theme='powerlineish'
+"gitgutter
+function! GitStatus()
+  let [a,m,r] = GitGutterGetHunkSummary()
+  return printf('+%d ~%d -%d', a, m, r)
+endfunction
+set statusline+=%{GitStatus()}
+let g:gitgutter_sign_allow_clobber = 1
+highlight GitGutterAdd    guifg=#009900 ctermfg=2
+highlight GitGutterChange guifg=#bbbb00 ctermfg=3
+highlight GitGutterDelete guifg=#ff2222 ctermfg=1
+
+"let g:gitgutter_sign_added = 'xx'
+"let g:gitgutter_sign_modified = 'yy'
+"let g:gitgutter_sign_removed = 'zz'
+let g:gitgutter_sign_removed_first_line = '^^'
+let g:gitgutter_sign_removed_above_and_below = '{'
+let g:gitgutter_sign_modified_removed = 'ww'
+highlight link GitGutterChangeLine DiffText
+let g:gitgutter_diff_relative_to = 'working_tree'
+
+
 
 """""""""""""""""""""""""""""""""""""""""
 " asyncrun
@@ -883,9 +568,9 @@ nnoremap <leader>w  :%s/\s\+$//<cr>:let @/=''<CR>
 """""""""""""""""""""""""""""
 "      	                          主题
 "set termguicolors
-set t_Co=256
-"let g:monokai_term_italic = 1
-"let g:monokai_gui_italic = 1
+"set t_Co=256
+let g:monokai_term_italic = 1
+let g:monokai_gui_italic = 1
 colorscheme monokai
 
 
@@ -912,24 +597,6 @@ colorscheme monokai
 "colorscheme solarized
 "call togglebg#map("<F8>")
 "
-
-python << EOF
-import os
-import sys
-import vim
-if 'VIRTUAL_ENV' in os.environ:
-    project_base_dir = os.environ['VIRTUAL_ENV']
-    activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-    execfile(activate_this, dict(__file__=activate_this))
-for p in sys.path:
-    if os.path.isdir(p):
-        vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
-EOF
-
-" usage: gf enter import file,  ctrl+^ back to old file
-" python tips:
-" ctrl + > or < 左右缩进
-" ctrl + > or < 左右缩进
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  clang format
@@ -967,3 +634,190 @@ nmap <Leader>C :ClangFormatAutoToggle<CR>
 "  let formatcommand = ":" . firstline . "," . lastline . "Autoformat"
 "  exec formatcommand
 "endfunc
+au BufNewFile,BufRead *.svg setf svg
+
+
+" LeaderF 设置
+let g:Lf_ShowHidden = 1                 " 显示隐藏文件
+let g:Lf_StlSeparator = {'left': '', 'right': ''} " 设置状态栏分隔符
+let g:Lf_WindowPosition = 'popup'             " 窗口位置：'popup', 'bottom', 'top', 'left', 'right'
+"let g:Lf_PopupPosition = {'top': 0, 'left': 0}  " 弹出窗口位置
+"let g:Lf_PopupPosition = {'down': 0.3}  " 弹出窗口位置在底部，占屏幕高度的30%
+let g:Lf_PopupWidth = 0.8                     " 弹出窗口宽度占比
+let g:Lf_PopupHeight = 0.6                    " 弹出窗口高度占比
+
+" 显示设置
+let g:Lf_ShowRelativePath = 1                 " 显示相对路径
+let g:Lf_StlShowFileNumber = 1                " 状态栏显示文件数量
+
+" 性能优化
+let g:Lf_PreviewInPopup = 1                   " 使用弹出窗口预览文件内容
+let g:Lf_FuzzyMatchSpawnLeader = 1            " 启动 LeaderF 使用子进程进行模糊匹配
+let g:Lf_UseCache = 1                         " 启用缓存
+
+" 控制搜索参数
+let g:Lf_CommandMap = {
+      \ 'tag': 'global',
+      \ 'tagAppend': 'global -a',
+      \ 'file': 'ctrlp'
+      \ }
+
+" LeaderF 键绑定
+" nnoremap <Leader>ff :Leaderf file<CR>
+" nnoremap <Leader>fb :Leaderf buffer<CR>  " 缓冲区搜索
+nnoremap <C-p> :Leaderf file<CR>
+nnoremap <C-l> :Leaderf buffer<CR> 
+nnoremap <Leader>fh :Leaderf help<CR> 
+nnoremap <Leader>fm :Leaderf mru<CR>
+nnoremap <Leader>ft :Leaderf tag<CR>
+nnoremap <Leader>rg :Leaderf rg<CR>
+
+nnoremap <silent> <leader>gd <Plug>LeaderfGtagsDefinition
+nnoremap <silent> <leader>gr <Plug>LeaderfGtagsReference
+nnoremap <silent> <leader>gs <Plug>LeaderfGtagsSymbol
+nnoremap <silent> <leader>gg <Plug>LeaderfGtagsGrep
+vmap <silent> <leader>gd <Plug>LeaderfGtagsDefinition
+vmap <silent> <leader>gr <Plug>LeaderfGtagsReference
+vmap <silent> <leader>gs <Plug>LeaderfGtagsSymbol
+vmap <silent> <leader>gg <Plug>LeaderfGtagsGrep
+
+
+
+" LeaderF with ripgrep 设置
+"let g:Lf_RgConfig = [['--colors=match:fg:208'], ['-g', '!_build']]
+let g:Lf_GrepBackend = 'rg'
+
+let g:Lf_GtagsAutoGenerate = 1
+let s:cachedir = expand('~/.cache/vim')
+let g:Lf_WorkingDirectoryMode = 'c'
+let g:Lf_CacheDirectory = s:cachedir
+" let g:Lf_ShortcutF = <C-p>
+" let g:Lf_ShortcutB = <C-l>
+
+
+
+
+" floaterm 设置
+nnoremap <silent><leader>tt :FloatermToggle<CR>
+nnoremap <silent><leader>th :FloatermHide<CR>
+nnoremap <silent><leader>tk :FloatermKill<CR>
+" tnoremap <silent><leader>t <C-\><C-n>:FloatermToggle<CR>
+
+" 配置 Floaterm
+nnoremap <silent> <Leader>to :Leaderf floaterm<CR>
+" tnoremap <silent> <Leader>tl <C-\><C-n>:Leaderf floaterm<CR>
+
+let g:Lf_UseFloaterm = 1        " 启用 Floaterm 支持
+let g:floaterm_width = 0.8      " 设置 Floatterm 宽度占屏幕 80%
+let g:floaterm_height = 0.8     " 设置 Floatterm 高度占屏幕 80%
+let g:floaterm_wintype = 'float' " 设置窗口类型为浮动
+
+" indentLine 设置
+let g:indentLine_enabled = 1
+
+" vim-gitgutter 设置
+let g:gitgutter_enabled = 1
+
+" tagbar 设置
+" nmap <F8> :TagbarToggle<CR>
+"autocmd Buffer *.* nmap to :Tagbar<CR>
+
+" vim-bookmarks 设置
+nmap mm :BookmarkToggle<CR>
+nmap mi :BookmarkAnnotate<CR>
+nmap mn :BookmarkNext<CR>
+nmap mp :BookmarkPrev<CR>
+nmap ma :BookmarkShowAll<CR>
+nmap mc :BookmarkClearAll<CR>
+
+nmap <leader>ls <Plug>MarkSet
+nmap <leader>lc <Plug>MarkClear
+nmap <leader>lr <Plug>MarkRegex
+nmap <leader>lp <Plug>MarkSearchCurentPrev
+nmap <leader>ln <Plug>MarkSearchCurentNext
+
+" coc.nvim 设置
+set updatetime=1000
+set signcolumn=yes
+
+function! CheckBackspace() abort
+	let col = col('.') - 1
+	return !col || getline('.')[col - 1] =~# '\s'
+endfunction
+
+"inoremap <silent><expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+"inoremap <silent><expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#pum#next(1) :
+	\ CheckBackspace() ? "\<TAB>" : coc#refresh()
+inoremap <silent><expr> <S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+inoremap <expr> <c-space> coc#refresh()
+
+nnoremap <silent> K       :call CocActionAsync('doHover')<CR>
+nnoremap <silent> gd      <Plug>(coc-definition)
+nnoremap <silent> gD      <Plug>(coc-type-definition)
+nnoremap <silent> gy      <Plug>(coc-type-implementation)
+nnoremap <silent> gr      <Plug>(coc-references)
+
+" coc-clangd 设置
+let g:coc_global_extensions = [ 'coc-json', 'coc-clangd' ]
+
+" Jump to previous/next diagnostic message
+nnoremap <silent> [g <Plug>(coc-diagnostic-prev)
+nnoremap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" Autocomplete
+inoremap <silent><expr> <C-CR> coc#refresh()
+
+" Show diagnostics in a floating window
+nnoremap <silent> <leader>a  :<C-u>CocList diagnostics<CR>
+
+" Use <leader>qf to fix the current diagnostic error
+nnoremap <silent> <leader>qf :CocAction quickfix<CR>
+
+" Format selected region
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+" Rename symbol at cursor
+nmap <leader>rn <Plug>(coc-rename)
+
+" Symbol renaming
+nmap <leader>rr <Plug>(coc-rename)
+
+" Call CocCommand from command line
+nnoremap <leader>cc :CocCommand<CR>
+
+" Open CocList
+nnoremap <leader>cl :CocList<CR>
+
+" 配置编译器标志
+" autocmd FileType c,cpp call coc#ext#build()
+
+" 启用补全
+set completeopt=menuone,noinsert,noselect
+
+" 跑 CocInfo 来显示错误
+nnoremap <silent> <leader>li :CocInfo<CR>
+
+" 文件类型自动补全建议
+" autocmd FileType c,cpp call coc#ext#build()
+
+" tab
+noremap to :tabnew<CR>
+noremap tc :tabclose<CR>
+noremap tp :tabnext<CR>
+noremap tn :tabprev<CR>
+nmap t1 <Plug>AirlineSelectTab1
+nmap t2 <Plug>AirlineSelectTab2
+nmap t3 <Plug>AirlineSelectTab3
+nmap t4 <Plug>AirlineSelectTab4
+nmap t5 <Plug>AirlineSelectTab5
+nmap t6 <Plug>AirlineSelectTab6
+nmap t7 <Plug>AirlineSelectTab7
+nmap t8 <Plug>AirlineSelectTab8
+
+nnoremap <leader>w  :%s/\s\+$//<CR>:let @/=''<CR>
+
+
