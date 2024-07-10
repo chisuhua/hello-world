@@ -130,18 +130,14 @@ endif
  set foldmethod=indent
  nnoremap <space><space> za
  set foldlevel=99
-"显示当前的行号列号：
  set ruler
-"显示行号：
  set number
  set relativenumber
-"行宽
+ set cursorline
+ set cursorcolumn
 set textwidth=9999
-"自动折行
 "set nowrap
  set wrap
-"在html标签之间跳转(%)
- runtime macros/matchit.vim
 " 搜索
 set hlsearch                    " highlight searches
 set incsearch                   " do incremental searching, search as you type
@@ -385,29 +381,6 @@ let g:cpp_class_decl_highlight = 1
 let g:cpp_experimental_template_highlight = 1
 
 """"""""""""""""""""""""""""""
-" gtags.vim
-" To go to the referenced point of 'func', add -r option.
-"       :Gtags -r func
-"
-" To go to any symbols which are not defined in GTAGS, try this.
-"       :Gtags -s func
-"
-" To go to any string other than symbol, try this.
-"       :Gtags -g ^[sg]et_
-"
-" To get list of objects in a file 'main.c', use -f command.
-"       :Gtags -f main.c
-"
-
-"let g:Gtags_Auto_Map=1
-let g:Gtags_Auto_Update=1
-noremap <C-\><C-f> :Gtags -P <C-R>=expand("<cfile>")<CR><CR>
-noremap <C-\><C-g> :Gtags <C-R>=expand("<cword>")<CR><CR>
-noremap <C-\><C-s> :Gtags -s <C-R>=expand("<cword>")<CR><CR>
-noremap <C-\><C-r> :Gtags -r <C-R>=expand("<cword>")<CR><CR>
-noremap <C-\><C-e> :Gtags -g <C-R>=expand("<cword>")<CR>
-noremap <C-\><C-]> :GtagsCursor<CR>
-""""""""""""""""""""""""""""""
 "":nmap <C-[> :ta<CR>
 "":nmap <C-t> :pop<CR>
 "":nmap <C-[> :tag<CR>
@@ -526,19 +499,19 @@ noremap <C-k>n :tabprev<CR>
 "noremap <C-k>l <Plug>AirlineSelectNextTab
 
 
-"let g:airline_theme='molokai'
+let g:airline_theme='molokai'
 "let g:airline_theme='zenburn'
-let g:airline_theme='powerlineish'
+"let g:airline_theme='powerlineish'
 "gitgutter
-function! GitStatus()
-  let [a,m,r] = GitGutterGetHunkSummary()
-  return printf('+%d ~%d -%d', a, m, r)
-endfunction
-set statusline+=%{GitStatus()}
-let g:gitgutter_sign_allow_clobber = 1
-highlight GitGutterAdd    guifg=#009900 ctermfg=2
-highlight GitGutterChange guifg=#bbbb00 ctermfg=3
-highlight GitGutterDelete guifg=#ff2222 ctermfg=1
+"function! GitStatus()
+  "let [a,m,r] = GitGutterGetHunkSummary()
+  "return printf('+%d ~%d -%d', a, m, r)
+"endfunction
+"set statusline+=%{GitStatus()}
+"let g:gitgutter_sign_allow_clobber = 1
+"highlight GitGutterAdd    guifg=#009900 ctermfg=2
+"highlight GitGutterChange guifg=#bbbb00 ctermfg=3
+"highlight GitGutterDelete guifg=#ff2222 ctermfg=1
 
 "let g:gitgutter_sign_added = 'xx'
 "let g:gitgutter_sign_modified = 'yy'
@@ -552,26 +525,16 @@ let g:gitgutter_diff_relative_to = 'working_tree'
 
 
 """""""""""""""""""""""""""""""""""""""""
-" asyncrun
-" ex
-"":AsyncRun git push origin master
-"":AsyncRun gcc % -o %<
-"":AsyncRun ctags -R --fields=+S .
-"":AsyncRun grep -R <cword> .
-
-
-"""""""""""""""""""""""""""""""""""""""""
 " ShowTrailingWhitespace
 "一键清楚行尾空白符
 nnoremap <leader>w  :%s/\s\+$//<cr>:let @/=''<CR>
 
 """""""""""""""""""""""""""""
 "      	                          主题
-"set termguicolors
-"set t_Co=256
+set termguicolors
+set t_Co=256
 let g:monokai_term_italic = 1
 let g:monokai_gui_italic = 1
-colorscheme monokai
 
 
 "if !exists("g:vimrc_loaded")
@@ -590,6 +553,8 @@ colorscheme monokai
     endif " has
 "endif " exists(...)
 
+"colorscheme monokai
+colorscheme molokai
 "colorscheme editplus
 "colorscheme zenburn
 
@@ -747,9 +712,9 @@ endfunction
 
 "inoremap <silent><expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 "inoremap <silent><expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
-inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#pum#next(1) :
-	\ CheckBackspace() ? "\<TAB>" : coc#refresh()
-inoremap <silent><expr> <S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+"inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#pum#next(1) :
+	"\ CheckBackspace() ? "\<TAB>" : coc#refresh()
+"inoremap <silent><expr> <S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 inoremap <expr> <c-space> coc#refresh()

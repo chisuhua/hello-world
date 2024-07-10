@@ -14,8 +14,6 @@ Plug 'crusoexia/vim-monokai'
 Plug 'jnurmine/Zenburn'						"colorscheme for GUI
 Plug 'missingtears/editplus'						"colorscheme for GUI
 Plug 'tomasr/molokai'
-"Plug 'fxn/vim-colors-x'
-"common
 
 "Plug 'gregsexton/MatchTag'
 "Plug 'vim-scripts/delimitMate.vim'
@@ -42,13 +40,10 @@ Plug 'rhysd/vim-clang-format'
 
 "llvm
 
-"nim
-"Plug 'gmarik/v.vim'
-
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'Yggdroot/LeaderF', {'do': './install.sh'}
 Plug 'voldikss/LeaderF-floaterm'
 Plug 'voldikss/vim-floaterm'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'Yggdroot/indentLine'
 
 Plug 'scrooloose/nerdtree'
@@ -56,7 +51,7 @@ Plug 'scrooloose/nerdcommenter'
 
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'skywind3000/gutentags_plus'
-Plug 'aceofall/gtags.vim'
+"Plug 'aceofall/gtags.vim'
 
 Plug 'majutsushi/tagbar'
 
