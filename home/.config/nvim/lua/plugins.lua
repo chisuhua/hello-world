@@ -69,14 +69,32 @@ return {
     opts = {
       -- 可选配置，按需启用组件
       bigfile = { enabled = true },
-      dashboard = { enabled = true },
+      dashboard = { 
+        enabled = true,
+        content = {
+          { "🚀 Quick Actions", "" },
+          { "  Find File", "<C-p>", icon = "", desc = "Find files using Telescope" },
+          { "󰈚  Recent Files", "<leader>fr", icon = "󰈚", desc = "Open recent files" },
+          { "  Find Word", "<leader>/", icon = "", desc = "Search current word" },
+          { "", "" },
+          { "  Sessions", "<leader>fs", icon = "", desc = "Manage sessions" },
+        }
+      },
       notifier = { enabled = true },
       quickfile = { enabled = true },
       statuscolumn = { enabled = true },
+      statusline = { enabled = true },
+      smooth = { enabled = true },
       words = { enabled = true },
+      picker = { enabled = true },
       -- 更多选项见 https://github.com/folke/snacks.nvim#-usage
     },
   },
+{
+  "akinsho/toggleterm.nvim",
+  version = "*",
+  config = true,
+},
 	{
 	  "numToStr/Comment.nvim",
 	  event = "VeryLazy",
@@ -167,13 +185,14 @@ return {
       aider_cmd = "aider",
       -- Command line arguments passed to aider
       args = {
-        "--no-auto-commits",
         "--model", "deepseek", "--api-key", "deepseek=sk-8fcbc9a1063c45d792b2903fa31baa1a",
         "--pretty",
         "--stream",
+        "--chat-history-file", "aider_session.log"
       },
       -- Automatically reload buffers changed by Aider (requires vim.o.autoread = true)
       auto_reload = true,
+      notifications = true,
       }) 
     end,
   },
@@ -220,15 +239,66 @@ return {
     },
     cmd = "Telescope",
     keys = {
+      { "<C-p>", "<cmd>Telescope frecency<cr>", desc = "Find frequent/recent files (VS Code style)" },
+      { "<C-t>", "<cmd>Telescope lsp_workspace_symbols<cr>", desc = "Workspace symbols" },
       { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
       { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
       { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
       { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help" },
     },
     config = function()
-      require("telescope").setup({
+      local telescope = require("telescope")
+      local actions = require("telescope.actions")
+
+      -- 自动检测是否安装 fd，若未安装则回退到 find
+      local has_fd, _ = pcall(require, "telescope.utils")
+      local use_fd = vim.fn.executable("fd") == 1
+
+      telescope.setup({
+        defaults = {
+          prompt_prefix = "🔍 ",
+          selection_caret = "➤ ",
+          path_display = { "truncate" },
+          file_ignore_patterns = {
+            "%.git/", "node_modules/", "%.cache/", "build/", "%.vscode/",
+            "target/", "_build/", "dist/", "deps/", "%.next/", "out/",
+          },
+          sorting_strategy = "ascending",
+          layout_config = {
+            prompt_position = "top",
+            horizontal = { width = 0.9, height = 0.85 },
+            vertical = { mirror = false },
+          },
+          mappings = {
+            i = {
+              ["<C-j>"] = actions.move_selection_next,
+              ["<C-k>"] = actions.move_selection_previous,
+              ["<C-c>"] = actions.close,
+            },
+          },
+          vimgrep_arguments = {
+            "rg", "--color=never", "--no-heading", "--with-filename",
+            "--line-number", "--column", "--smart-case"
+          },
+          -- 使用 fd 提升速度（如果可用）
+          find_command = use_fd and { "fd", "--type", "f", "--hidden", "--follow", "--exclude", ".git" } or nil,
+        },
+        pickers = {
+          find_files = {
+            -- 即使不用 frecency，find_files 也受益于 fd
+            find_command = use_fd and { "fd", "--type", "f", "--hidden", "--follow", "--exclude", ".git", "--exclude", "node_modules" } or nil,
+          },
+          frecency = {
+            show_scores = false,
+            show_unindexed = true,
+            ignore_patterns = { "%.git/", "node_modules/" },
+          },
+        },
         extensions = {
-          frecency = { show_scores = false, show_unindexed = true }
+          frecency = {
+            show_scores = false,
+            show_unindexed = true,
+          }
         }
       })
       require("telescope").load_extension("frecency")
@@ -508,7 +578,7 @@ return {
       ["<leader>gd"] = { "<cmd>DiffviewOpen<cr>", "Git diff" },
       ["<leader>gh"] = { "<cmd>DiffviewFileHistory %<cr>", "File history" },
       ["<leader>gb"] = { "<cmd>GitBlameToggle<cr>", "Git blame" },
-      ["<leader>aa"] = { "<cmd>ToggleTerm direction=float<cr>", "Aider terminal" },
+      ["<leader>ta"] = { "<cmd>ToggleTerm direction=float<cr>", "terminal" },
       ["<leader>tn"] = { "<cmd>tabnew<cr>", "New tab" },
       ["<leader>tc"] = { "<cmd>tabclose<cr>", "Close tab" },
       ["<leader>to"] = { "<cmd>tabonly<cr>", "Close other tabs" },
