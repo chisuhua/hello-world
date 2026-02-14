@@ -48,21 +48,7 @@ return {
 
     vim.cmd.colorscheme("catppuccin")
   end,
-},
---    {
---    "sainnhe/gruvbox-material",
---    lazy = false, -- 必须设为 false，确保启动时加载
---    priority = 1000, -- 高优先级，确保尽早加载 colorscheme
---    config = function()
---      vim.g.gruvbox_material_background = 'hard'   -- 可选: soft, medium, hard
---      vim.g.gruvbox_material_foreground = 'original' -- 可选: original, mix, lighter
---      vim.g.gruvbox_material_enable_italic = true
---      vim.g.gruvbox_material_diagnostic_virtual_text = 'colored' -- LSP 诊断颜色优化
---
---      -- 应用配色方案
---      vim.cmd('colorscheme gruvbox-material')
---    end,
---  },
+  },
   {
     "folke/snacks.nvim",
     event = "VeryLazy", -- 可选：延迟加载
@@ -70,7 +56,7 @@ return {
       -- 可选配置，按需启用组件
       bigfile = { enabled = true },
       dashboard = { 
-        enabled = true,
+        enabled = false,
         content = {
           { "🚀 Quick Actions", "" },
           { "  Find File", "<C-p>", icon = "", desc = "Find files using Telescope" },
@@ -107,10 +93,10 @@ return {
     config = function()
       require("copilot").setup({
         suggestion = {
-          enabled = true,
+          enabled = false,
           auto_trigger = true,
           debounce = 75,
-          keymap = { accept = "<C-l>" },
+          -- keymap = { accept = "<C-l>" },
         },
         panel = { enabled = false },
       })
@@ -214,19 +200,24 @@ return {
 	    vim.o.autoread = true
 
 	    -- Recommended/example keymaps.
-	    vim.keymap.set({ "n", "x" }, "<C-a>", function() require("opencode").ask("@this: ", { submit = true }) end, { desc = "Ask opencode…" })
+      vim.keymap.set("n", "<leader>oq", function() require("opencode").ask("@this: ", { submit = true }) end, { desc = "Ask opencode.."})
+      vim.keymap.set("n", "<leader>os", function() require("opencode").select() end, { desc = "Select opencode action with -" })
+	    -- vim.keymap.set({ "n", "x" }, "<C-a>", function() require("opencode").ask("@this: ", { submit = true }) end, { desc = "Ask opencode…" })
 	    vim.keymap.set({ "n", "x" }, "<C-x>", function() require("opencode").select() end,                          { desc = "Execute opencode action…" })
-	    vim.keymap.set({ "n", "t" }, "<C-.>", function() require("opencode").toggle() end,                          { desc = "Toggle opencode" })
+	    -- vim.keymap.set({ "n", "t" }, "<C-.>", function() require("opencode").toggle() end,                          { desc = "Toggle opencode" })
 
 	    vim.keymap.set({ "n", "x" }, "go",  function() return require("opencode").operator("@this ") end,        { desc = "Add range to opencode", expr = true })
-	    vim.keymap.set("n",          "gol", function() return require("opencode").operator("@this ") .. "_" end, { desc = "Add line to opencode", expr = true })
+	    vim.keymap.set("n",          "gl", function() return require("opencode").operator("@this ") .. "_" end, { desc = "Add line to opencode", expr = true })
+
+      vim.keymap.set("n", "<leader>ao", function() require("opencode").toggle() end, { desc = "Toggle opencode panel" })
+
 
 	    vim.keymap.set("n", "<S-C-u>", function() require("opencode").command("session.half.page.up") end,   { desc = "Scroll opencode up" })
 	    vim.keymap.set("n", "<S-C-d>", function() require("opencode").command("session.half.page.down") end, { desc = "Scroll opencode down" })
 
 	    -- You may want these if you stick with the opinionated "<C-a>" and "<C-x>" above — otherwise consider "<leader>o…".
-	    vim.keymap.set("n", "+", "<C-a>", { desc = "Increment under cursor", noremap = true })
-	    vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement under cursor", noremap = true })
+	    -- vim.keymap.set("n", "+", "<C-a>", { desc = "Increment under cursor", noremap = true })
+	    -- vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement under cursor", noremap = true })
 	  end,
   },
 
@@ -241,6 +232,7 @@ return {
     keys = {
       { "<C-p>", "<cmd>Telescope frecency<cr>", desc = "Find frequent/recent files (VS Code style)" },
       { "<C-t>", "<cmd>Telescope lsp_workspace_symbols<cr>", desc = "Workspace symbols" },
+      { "<leader>fF", "<cmd>Telescope find_all_files<cr>", desc = "Find all files" },
       { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
       { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
       { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
@@ -288,6 +280,11 @@ return {
             -- 即使不用 frecency，find_files 也受益于 fd
             find_command = use_fd and { "fd", "--type", "f", "--hidden", "--follow", "--exclude", ".git", "--exclude", "node_modules" } or nil,
           },
+          find_files_all = {
+            find_command = use_fd and { "fd", "--type", "f", "--hidden", "--follow" } or nil,
+            -- 显式清空 ignore_patterns（覆盖 defaults）
+            file_ignore_patterns = {},
+          },
           frecency = {
             show_scores = false,
             show_unindexed = true,
@@ -328,8 +325,7 @@ return {
         clangd = function()
           require("lspconfig").clangd.setup({
             capabilities = capabilities,
-            cmd = { "clangd", "--background-index", "--compile-commands-dir=build" },
-            -- 可选：启用 inlay hints（Neovim 0.10+）
+            cmd = { "clangd", "--background-index", "--header-insertion=iwyu", "--suggest-missing-includes"},
             init_options = {
               clangd = {
                 hints = { parameters = true, deducedTypes = true }
@@ -367,13 +363,17 @@ return {
               fallback()
             end
           end, { "i", "s" }),
+          ["<C-e>"] = cmp.mapping.complete(),  -- 按 Ctrl+E 唤出补全菜单
+          ["<C-@>"] = cmp.mapping(function()
+            cmp.complete({ config = { sources = { { name = "copilot" } } } })
+          end),
         }),
         sources = cmp.config.sources({
-          { name = "copilot" },
           { name = "nvim_lsp" },
           { name = "luasnip" },
           { name = "buffer" },
           { name = "path" },
+          { name = "copilot" , group_index = 2},
         }),
       })
     end,
@@ -469,17 +469,83 @@ return {
       })
     end,
   },
-
   -- 📊 Git 集成
-  {
-    "lewis6991/gitsigns.nvim",
-    event = "BufRead",
-    config = true,
-  },
+{
+  "tpope/vim-fugitive",
+  event = "VeryLazy", -- 或 "BufRead"，按需触发
+},
+{
+  "lewis6991/gitsigns.nvim",
+  event = "BufRead",
+  config = function()
+    require("gitsigns").setup({
+      on_attach = function(bufnr)
+        local map = function(mode, l, r, desc)
+          vim.keymap.set(mode, l, r, { buffer = bufnr, desc = desc })
+        end
+
+        -- Hunk 操作
+        map("n", "<leader>gs", require("gitsigns").stage_hunk, "Stage hunk")
+        map("n", "<leader>gr", require("gitsigns").reset_hunk, "Reset hunk")
+        map("n", "<leader>gS", require("gitsigns").stage_buffer, "Stage buffer")
+        map("n", "<leader>gR", require("gitsigns").reset_buffer, "Reset buffer")
+
+        -- 预览
+        map("n", "<leader>gp", require("gitsigns").preview_hunk, "Preview hunk")
+        map("n", "<leader>gi", require("gitsigns").preview_hunk_inline, "Preview hunk inline")
+
+        -- 导航（智能兼容 diff 模式）
+        map("n", "]c", function()
+          if vim.wo.diff then return vim.cmd.normal({ "]c", bang = true }) end
+          require("gitsigns").nav_hunk("next")
+        end, "Next hunk")
+        map("n", "[c", function()
+          if vim.wo.diff then return vim.cmd.normal({ "[c", bang = true }) end
+          require("gitsigns").nav_hunk("prev")
+        end, "Prev hunk")
+
+        -- 文本对象
+        map({ "o", "x" }, "ih", require("gitsigns").select_hunk, "Select inner hunk")
+        map({ "o", "x" }, "ah", function()
+          require("gitsigns").select_hunk({ include_headers = true })
+        end, "Select a hunk")
+
+        -- Quickfix
+        map("n", "<leader>gq", require("gitsigns").setqflist, "Set quickfix list")
+      end,
+
+      -- 可选：启用行号高亮、符号列等（按需开启）
+      signcolumn = true,  -- 在 sign column 显示 + ~ _
+      numhl = false,      -- 是否高亮行号（绿色/红色）
+      linehl = false,     -- 是否高亮整行背景
+      word_diff = false,  -- 是否启用单词级差异
+    })
+  end,
+},
   {
     "sindrets/diffview.nvim",
     dependencies = "nvim-lua/plenary.nvim",
     cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
+    config = function()
+      require("diffview").setup({
+        keymaps = {
+          disable_defaults = false, -- 👈 确保不禁用默认
+          -- file_panel = {
+          --   -- ✅ 使用 actions 函数，不是字符串！
+          --   { "n", "s", actions.toggle_stage_entry, { desc = "Stage/Unstage hunk" } },
+          --   { "n", "S", actions.stage_all,           { desc = "Stage all" } },
+          --   { "n", "U", actions.unstage_all,         { desc = "Unstage all" } },
+          --   { "n", "r", actions.restore_entry,       { desc = "Restore file" } },
+          --   { "n", "q", actions.close,               { desc = "Close panel" } },
+          -- },
+          -- -- 如果你想在 diff 文件内容窗口也用 s/r，加到 view:
+          -- view = {
+          --   { "n", "s", actions.toggle_stage_entry, { desc = "Stage hunk (in view)" } },
+          --   { "n", "r", actions.restore_entry,      { desc = "Revert hunk (in view)" } },
+          -- }
+        },
+      })
+    end,
   },
   {
     "f-person/git-blame.nvim",
@@ -488,11 +554,11 @@ return {
       vim.g.gitblame_enabled = 0
     end,
   },
-{
+  {
   "kkharji/sqlite.lua",
   -- 通常作为依赖自动加载，但如果你要显式使用，可以加 lazy = false
   -- lazy = false, -- 可选：立即加载（一般不需要）
-},
+  },
   {
   "LintaoAmons/bookmarks.nvim",
   dependencies = { "nvim-lua/plenary.nvim" },
@@ -546,12 +612,22 @@ return {
       m = { name = "+bookmarks" },  -- mark管理
     }, { prefix = "<leader>" })
 
-    -- ✅ 第二步：注册具体命令（关键：窗口命令必须用 <leader>w 作为前缀）
     wk.register({
       -- 核心操作
       ["<leader>q"] = { "<cmd>q<cr>", "Quit" },
       -- ["<leader>e"] = { "<cmd>NvimTreeToggle<cr>", "Toggle file tree" },
       ["<leader>e"] = { "<cmd>Neotree<cr>", "Toggle file tree" },
+
+      ["<leader>ca"] = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action (Fix)" },
+      ["<leader>cp"] = {
+        function()
+          vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("i", true, false, true), "n", false)
+          require("cmp").complete()
+        end,
+        "Insert & trigger completion"
+      },
+      ["<leader>]d"] = { "<cmd>lua vim.diagnostic.goto_next()<cr>", "Next Diagnostic" },
+      ["<leader>[d"] = { "<cmd>lua vim.diagnostic.goto_prev()<cr>", "Prev Diagnostic" },
       
       -- ✅ 窗口管理（必须归属到 <leader>w 分组）
       ["<leader>wv"] = { "<C-w>v", "Split vertical" },
@@ -569,21 +645,36 @@ return {
       ["<leader>ml"] = { "<cmd>BookmarksList<cr>", "List bookmarks" },
       ["<leader>mn"] = { "<cmd>BookmarksNext<cr>", "Next bookmark" },
       ["<leader>mp"] = { "<cmd>BookmarksPrev<cr>", "Previous bookmark" },
+
       
       -- 保留原有符号/调试等命令
       ["<leader>sw"] = { "<cmd>lua vim.lsp.buf.workspace_symbol()<cr>", "Workspace symbols" },
       ["<leader>sd"] = { "<cmd>lua vim.lsp.buf.document_symbol()<cr>", "Document symbols" },
       ["<leader>st"] = { "<cmd>Telescope lsp_document_symbols<cr>", "Doc symbols (TS)" },
       ["<leader>sT"] = { "<cmd>Telescope lsp_workspace_symbols<cr>", "Workspace symbols (TS)" },
-      ["<leader>gd"] = { "<cmd>DiffviewOpen<cr>", "Git diff" },
-      ["<leader>gh"] = { "<cmd>DiffviewFileHistory %<cr>", "File history" },
-      ["<leader>gb"] = { "<cmd>GitBlameToggle<cr>", "Git blame" },
+      -- ["<leader>gd"] = { "<cmd>DiffviewOpen<cr>", "Git diff" },
+      -- ["<leader>gh"] = { "<cmd>DiffviewFileHistory %<cr>", "File history" },
+      -- ["<leader>gb"] = { "<cmd>GitBlameToggle<cr>", "Git blame" },
       ["<leader>ta"] = { "<cmd>ToggleTerm direction=float<cr>", "terminal" },
       ["<leader>tn"] = { "<cmd>tabnew<cr>", "New tab" },
       ["<leader>tc"] = { "<cmd>tabclose<cr>", "Close tab" },
       ["<leader>to"] = { "<cmd>tabonly<cr>", "Close other tabs" },
       ["<leader>t["] = { "<cmd>tabprevious<cr>", "Prev tab" },
       ["<leader>t]"] = { "<cmd>tabnext<cr>", "Next tab" },
+g = {
+  name = "+Git",
+  s = { "<cmd>lua require('gitsigns').stage_hunk()<cr>", "Stage hunk" },
+  r = { "<cmd>lua require('gitsigns').reset_hunk()<cr>", "Reset hunk" },
+  S = { "<cmd>lua require('gitsigns').stage_buffer()<cr>", "Stage buffer" },
+  R = { "<cmd>lua require('gitsigns').reset_buffer()<cr>", "Reset buffer" },
+  p = { "<cmd>lua require('gitsigns').preview_hunk()<cr>", "Preview hunk" },
+  i = { "<cmd>lua require('gitsigns').preview_hunk_inline()<cr>", "Preview inline" },
+  q = { "<cmd>lua require('gitsigns').setqflist()<cr>", "Quickfix hunks" },
+  d = { "<cmd>DiffviewOpen<cr>", "Diff view" },
+  h = { "<cmd>DiffviewFileHistory %<cr>", "File history" },
+  b = { "<cmd>GitBlameToggle<cr>", "Git blame" },
+},
+
     })
   end,
 },
