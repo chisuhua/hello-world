@@ -393,37 +393,42 @@ return {
       })
     end,
   },
-
-  -- 🐞 调试
   {
     "mfussenegger/nvim-dap",
     dependencies = {
       "rcarriga/nvim-dap-ui",
       "theHamsta/nvim-dap-virtual-text",
+      "nvim-neotest/nvim-nio",
+      "mfussenegger/nvim-dap-python",
     },
     config = function()
       local dap = require("dap")
       local dapui = require("dapui")
       dapui.setup()
-      dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
-      dap.adapters.codelldb = {
-        type = "server",
-        port = "${port}",
-        executable = { command = "codelldb", args = { "--port", "${port}" } },
-      }
-      dap.configurations.cpp = {
-        {
-          name = "Launch",
-          type = "codelldb",
-          request = "launch",
-          program = function()
-            return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-          end,
-          cwd = "${workspaceFolder}",
-          stopOnEntry = false,
+
+      local codelldb_path = vim.fn.expand("~/.vscode-server/extensions/vadimcn.vscode-lldb-1.12.1/adapter/codelldb")
+      local lldb_lib_path = vim.fn.expand("~/.vscode-server/extensions/vadimcn.vscode-lldb-1.12.1/lldb/lib")
+
+      if vim.fn.executable(codelldb_path) == 1 then
+        dap.adapters.lldb = {
+          type = "executable",
+          command = codelldb_path,
+          options = {
+            env = {
+              LD_LIBRARY_PATH = lldb_lib_path .. ":" .. (os.getenv("LD_LIBRARY_PATH") or ""),
+            },
+          },
         }
-      }
-      dap.configurations.c = dap.configurations.cpp
+      else
+        vim.notify("❌ codelldb not found at: " .. codelldb_path, vim.log.levels.ERROR)
+      end
+
+      require("dap.ext.vscode").load_launchjs()
+
+      dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
+      dap.listeners.before.event_terminated["dapui_config"] = function() dapui.close() end
+      dap.listeners.before.event_exited["dapui_config"] = function() dapui.close() end
+
     end,
     keys = {
       { "<F5>", "<cmd>lua require'dap'.continue()<cr>", desc = "Debug: Start/Continue" },
@@ -434,6 +439,44 @@ return {
     },
   },
 
+  -- 🐞 调试
+  -- {
+  --   "mfussenegger/nvim-dap",
+  --   dependencies = {
+  --     "rcarriga/nvim-dap-ui",
+  --     "theHamsta/nvim-dap-virtual-text",
+  --     "mxsdev/nvim-dap-vscode-js",
+  --   },
+  --   config = function()
+  --     local dap = require("dap")
+  --     local dapui = require("dapui")
+  --     require("dap.ext.vscode").load_launchjs()
+  --     dapui.setup()
+  --     dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
+  --
+  --     dap.adapters.codelldb = {
+  --       type = "server",
+  --       port = "${port}",
+  --       executable = { command = "codelldb", args = { "--port", "${port}" } },
+  --     }
+  --     dap.adapters.cpp = {
+  --       type = "executable",
+  --       command = "/usr/bin/gdb",  -- 或 "gdb"
+  --       args = { "--interpreter=dap" },             -- 关键：启用 DAP 模式
+  --     }
+  --     dap.configurations.cpp = {
+  --     }
+  --     dap.configurations.c = dap.configurations.cpp
+  --   end,
+  --   keys = {
+  --     { "<F5>", "<cmd>lua require'dap'.continue()<cr>", desc = "Debug: Start/Continue" },
+  --     { "<F10>", "<cmd>lua require'dap'.step_over()<cr>", desc = "Debug: Step Over" },
+  --     { "<F11>", "<cmd>lua require'dap'.step_into()<cr>", desc = "Debug: Step Into" },
+  --     { "<F12>", "<cmd>lua require'dap'.step_out()<cr>", desc = "Debug: Step Out" },
+  --     { "<leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<cr>", desc = "Debug: Toggle Breakpoint" },
+  --   },
+  -- },
+  --
   -- 🌲 Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
@@ -529,7 +572,7 @@ return {
     config = function()
       require("diffview").setup({
         keymaps = {
-          disable_defaults = false, -- 👈 确保不禁用默认
+          disable_defaults = true, -- 👈 确保不禁用默认
           -- file_panel = {
           --   -- ✅ 使用 actions 函数，不是字符串！
           --   { "n", "s", actions.toggle_stage_entry, { desc = "Stage/Unstage hunk" } },
